@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.techtest.scrumretroapi.entity.RetrospectiveEntityTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-03-19T10:18:27" hostname="HP-Z210-Desktop" time="0.022">
+  <properties/>
+  <testcase name="testObjectInitialisationWithConstructor()" classname="com.techtest.scrumretroapi.entity.RetrospectiveEntityTest" time="0.003"/>
+  <testcase name="testObjectIsConvertedToJsonWithJsonPropertyAnnotations()" classname="com.techtest.scrumretroapi.entity.RetrospectiveEntityTest" time="0.017"/>
+  <system-out><![CDATA[{"name":"Fixed bug","summary":"A bug was fixed","date":"2024-03-19","participants":["Tom","Richard","Harry"],"feedback":[]}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.techtest.scrumretroapi.entity.FeedbackEntityTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-03-19T10:18:27" hostname="HP-Z210-Desktop" time="0.088">
+  <properties/>
+  <testcase name="testObjectInitialisationWithConstructor()" classname="com.techtest.scrumretroapi.entity.FeedbackEntityTest" time="0.003"/>
+  <testcase name="testObjectIsConvertedToJsonWithJsonPropertyAnnotations()" classname="com.techtest.scrumretroapi.entity.FeedbackEntityTest" time="0.083"/>
+  <system-out><![CDATA[{"item":1,"itemBody":{"name":"John Smith","body":"Great, you fixed the bug!","feedbackType":"POSITIVE"}}
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

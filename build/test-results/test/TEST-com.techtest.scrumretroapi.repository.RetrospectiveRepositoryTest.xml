@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.techtest.scrumretroapi.repository.RetrospectiveRepositoryTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2024-03-19T10:18:27" hostname="HP-Z210-Desktop" time="0.044">
+  <properties/>
+  <testcase name="testFindAllRetrospectives()" classname="com.techtest.scrumretroapi.repository.RetrospectiveRepositoryTest" time="0.01"/>
+  <testcase name="testFindByName()" classname="com.techtest.scrumretroapi.repository.RetrospectiveRepositoryTest" time="0.013"/>
+  <testcase name="testFindRetrospectivesByDate()" classname="com.techtest.scrumretroapi.repository.RetrospectiveRepositoryTest" time="0.008"/>
+  <system-out><![CDATA[2024-03-19T10:18:27.403Z  INFO 12299 --- [template] [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.techtest.scrumretroapi.repository.RetrospectiveRepositoryTest]: RetrospectiveRepositoryTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2024-03-19T10:18:27.413Z  INFO 12299 --- [template] [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.techtest.scrumretroapi.ScrumRetroApiApplication for test class com.techtest.scrumretroapi.repository.RetrospectiveRepositoryTest
+2024-03-19T10:18:27.461Z  INFO 12299 --- [template] [    Test worker] c.t.s.service.RetrospectiveService       : Attempting to retrieve retrospectives for date: 2024-03-19
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
