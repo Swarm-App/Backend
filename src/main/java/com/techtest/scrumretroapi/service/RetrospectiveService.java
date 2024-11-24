@@ -3,6 +3,8 @@ package com.techtest.scrumretroapi.service;
 import com.techtest.scrumretroapi.entity.Retrospective;
 import com.techtest.scrumretroapi.entity.feedback.Feedback;
 import com.techtest.scrumretroapi.entity.feedback.FeedbackItem;
+import com.techtest.scrumretroapi.entity.task.Task;
+import com.techtest.scrumretroapi.entity.task.TaskItem;
 import com.techtest.scrumretroapi.repository.RetrospectiveRepository;
 import com.techtest.scrumretroapi.utils.LoggingUtil;
 import org.apache.commons.logging.Log;
@@ -34,7 +36,6 @@ public class RetrospectiveService {
         return retrospectiveList.stream().sorted().toList();
     }
 
-
     @Transactional
     public void createNewRetrospective(Retrospective retrospective) throws Exception {
         String nameToCheck = retrospective.getName();
@@ -55,8 +56,10 @@ public class RetrospectiveService {
     }
 
     @Transactional
-    public void createNewFeedbackForRetrospective(String retrospectiveName, FeedbackItem newFeedbackItem) throws Exception {
-        // Determine if the name exists and fetch the retrospective object with feedback list
+    public void createNewFeedbackForRetrospective(String retrospectiveName, FeedbackItem newFeedbackItem)
+            throws Exception {
+        // Determine if the name exists and fetch the retrospective object with feedback
+        // list
         Retrospective retrospective = retrospectiveRepository.findByName(retrospectiveName);
 
         if (retrospective == null) {
@@ -77,7 +80,8 @@ public class RetrospectiveService {
     }
 
     @Transactional
-    public void updateFeedbackForRetrospective(String retrospectiveName, int itemId, FeedbackItem feedbackItem) throws Exception {
+    public void updateFeedbackForRetrospective(String retrospectiveName, int itemId, FeedbackItem feedbackItem)
+            throws Exception {
         Retrospective retrospective = retrospectiveRepository.findByName(retrospectiveName);
 
         if (retrospective == null) {
@@ -93,8 +97,10 @@ public class RetrospectiveService {
                     .filter(fi -> fi.getItem() == itemId)
                     .findFirst()
                     .orElseThrow(() -> {
-                        logger.warn("Unable to update feedback for feedback item number: " + itemId + ". Does not exist for retrospective " + retrospectiveName);
-                        return new Exception("No feedback with item number: " + itemId + ". Please revise item number or create new feedback");
+                        logger.warn("Unable to update feedback for feedback item number: " + itemId
+                                + ". Does not exist for retrospective " + retrospectiveName);
+                        return new Exception("No feedback with item number: " + itemId
+                                + ". Please revise item number or create new feedback");
                     });
 
             feedbackCopy.setItemBody(feedbackItem);
@@ -107,7 +113,78 @@ public class RetrospectiveService {
 
             retrospective.setFeedback(updatedFeedbackList);
             retrospectiveRepository.save(retrospective);
-            logger.info("Successfully updated feedback item " + itemId + " with new feedback for Retrospective " + retrospectiveName);
+            logger.info("Successfully updated feedback item " + itemId + " with new feedback for Retrospective "
+                    + retrospectiveName);
         }
     }
+
+    @Transactional
+    public void createNewTaskForRetrospective(String retrospectiveName, Task newTask) throws Exception {
+        Retrospective retrospective = retrospectiveRepository.findByName(retrospectiveName);
+        if (retrospective == null) {
+            logger.warn("Cannot add task to Retrospective " + retrospectiveName + ", as it doesn't exist!");
+            throw new Exception("Retrospective does not exist");
+        } else {
+            logger.info("Adding new task to retrospective: " + retrospectiveName);
+            logger.debug("Adding task with values: " + newTask);
+
+            List<Task> taskList = retrospective.getTask();
+            int item = taskList.size() + 1;
+            newTask.setItem(item);
+            taskList.add(newTask);
+            retrospective.setTask(taskList);
+
+            retrospectiveRepository.save(retrospective);
+            logger.info("New task added successfully to retrospective: " + retrospectiveName);
+        }
+    }
+
+    @Transactional
+    public void updateTaskForRetrospective(String retrospectiveName, int itemId, TaskItem taskItem) throws Exception {
+        Retrospective retrospective = retrospectiveRepository.findByName(retrospectiveName);
+
+        if (retrospective == null) {
+            logger.warn("Cannot update task in Retrospective " + retrospectiveName + ", as it doesn't exist!");
+            throw new Exception("Retrospective does not exist");
+        } else {
+            logger.info("Updating task for retrospective: " + retrospectiveName + ", item ID: " + itemId);
+            logger.debug("Updating task with values: " + taskItem);
+
+            List<Task> taskList = retrospective.getTask();
+            Task taskCopy = taskList.stream()
+                    .filter(t -> t.getItem() == itemId)
+                    .findFirst()
+                    .orElseThrow(() -> {
+                        logger.warn("Unable to update task for item number: " + itemId
+                                + ". Does not exist for retrospective " + retrospectiveName);
+                        return new Exception("No task with item number: " + itemId
+                                + ". Please revise item number or create new task");
+                    });
+
+            taskCopy.setItemBody(taskItem);
+
+            List<Task> updatedTaskList = new java.util.ArrayList<>(taskList.stream()
+                    .filter(t -> t.getItem() != itemId)
+                    .toList());
+
+            updatedTaskList.add(taskCopy);
+
+            retrospective.setTask(updatedTaskList);
+            retrospectiveRepository.save(retrospective);
+            logger.info("Successfully updated task item " + itemId + " for Retrospective " + retrospectiveName);
+        }
+    }
+
+    public List<Task> getTasksByRetrospectiveName(String retrospectiveName) throws Exception {
+        Retrospective retrospective = retrospectiveRepository.findByName(retrospectiveName);
+
+        if (retrospective == null) {
+            logger.warn("Cannot retrieve tasks for Retrospective " + retrospectiveName + ", as it doesn't exist!");
+            throw new Exception("Retrospective does not exist");
+        } else {
+            logger.info("Fetching tasks for retrospective: " + retrospectiveName);
+            return retrospective.getTask();
+        }
+    }
+
 }

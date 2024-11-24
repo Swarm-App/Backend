@@ -1,6 +1,7 @@
 package com.techtest.scrumretroapi.repository;
 
 import com.techtest.scrumretroapi.entity.Retrospective;
+import com.techtest.scrumretroapi.entity.task.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,7 @@ public interface RetrospectiveRepository extends JpaRepository<Retrospective, Lo
 
     @Query("SELECT r FROM Retrospective r WHERE r.name = :name")
     Retrospective findByName(@Param("name") String name);
+
+    @Query("SELECT r.task FROM Retrospective r WHERE r.name = :name")
+    List<Task> findTasksByRetrospectiveName(@Param("name") String name);
 }
