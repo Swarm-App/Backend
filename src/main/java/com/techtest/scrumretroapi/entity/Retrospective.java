@@ -3,6 +3,8 @@ package com.techtest.scrumretroapi.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.techtest.scrumretroapi.entity.feedback.Feedback;
+import com.techtest.scrumretroapi.entity.task.Task;
+
 import com.techtest.scrumretroapi.entity.utils.StringListConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,4 +42,8 @@ public class Retrospective {
     @JsonProperty
     @ElementCollection(targetClass = Feedback.class)
     private List<Feedback> feedback;
+
+    @JsonProperty
+    @ElementCollection(targetClass = Task.class)
+    private List<Task> task;
 }
