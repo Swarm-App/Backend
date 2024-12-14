@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 public interface RetrospectiveRepository extends JpaRepository<Retrospective, Long> {
-    @Query(value = "SELECT DISTINCT r FROM Retrospective r LEFT JOIN FETCH r.feedback ORDER BY r.name")
+    @Query(value = "SELECT DISTINCT r FROM Retrospective r LEFT JOIN FETCH r.feedback LEFT JOIN FETCH r.task ORDER BY r.name")
     Page<Retrospective> findAllRetrospectives(Pageable pageable);
 
     @Query("SELECT r FROM Retrospective r LEFT JOIN FETCH r.feedback WHERE r.date = :date")
@@ -23,6 +23,6 @@ public interface RetrospectiveRepository extends JpaRepository<Retrospective, Lo
     @Query("SELECT r FROM Retrospective r WHERE r.name = :name")
     Retrospective findByName(@Param("name") String name);
 
-    @Query("SELECT r.task FROM Retrospective r WHERE r.name = :name")
-    List<Task> findTasksByRetrospectiveName(@Param("name") String name);
+    // @Query("SELECT r.task FROM Retrospective r WHERE r.name = :name")
+    // List<Task> findTasksByRetrospectiveName(@Param("name") String name);
 }

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @OpenAPIDefinition(info = @Info(title = "Scrum Retrospective API", description = "This template API project provides basic endpoints for reading, creating, editing and deleting user data."))
@@ -197,13 +198,13 @@ public class RetrospectiveApiController {
         @PutMapping("/{retrospectiveName}/task")
         public ResponseEntity<Void> addTaskToRetrospective(
                         @PathVariable String retrospectiveName,
-                        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "New task to be created for retrospective.", required = true, content = @Content(schema = @Schema(implementation = Task.class))) @RequestBody Task newTask) {
+                        @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "New task to be created for retrospective.", required = true, content = @Content(schema = @Schema(implementation = Task.class))) @RequestBody TaskItem newTaskItem) {
                 logger.info(String.format("API Invoked: httpMethod=PUT path='/retrospective/%s/task'",
                                 retrospectiveName));
-                logger.info("Attempting to add new task for retrospective with values: " + newTask);
+                logger.info("Attempting to add new task for retrospective with values: " + newTaskItem);
 
                 try {
-                        retrospectiveService.createNewTaskForRetrospective(retrospectiveName, newTask);
+                        retrospectiveService.createNewTaskForRetrospective(retrospectiveName, newTaskItem);
                         return ResponseEntity.ok().build();
                 } catch (IllegalArgumentException exp) {
                         logger.warn("Retrospective not found for name: " + retrospectiveName);
@@ -253,11 +254,11 @@ public class RetrospectiveApiController {
                         @ApiResponse(responseCode = "500", description = "Failed to fetch tasks", content = @Content)
         })
         @GetMapping("/{retrospectiveName}/tasks")
-        public ResponseEntity<List<Task>> getTasksForRetrospective(@PathVariable String retrospectiveName) {
+        public ResponseEntity<Set<Task>> getTasksForRetrospective(@PathVariable String retrospectiveName) {
                 logger.info(String.format("API Invoked: httpMethod=GET path='/retrospective/%s/tasks'",
                                 retrospectiveName));
                 try {
-                        List<Task> tasks = retrospectiveService.getTasksByRetrospectiveName(retrospectiveName);
+                        Set<Task> tasks = retrospectiveService.getTasksByRetrospectiveName(retrospectiveName);
                         return ResponseEntity.ok(tasks);
                 } catch (Exception exp) {
                         logger.error("Failed to fetch tasks for retrospective: " + retrospectiveName, exp);

@@ -1,6 +1,8 @@
 package com.techtest.scrumretroapi.entity;
 
 import com.techtest.scrumretroapi.entity.feedback.Feedback;
+import com.techtest.scrumretroapi.entity.task.Task;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,13 +10,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Test cases to verify the creation and initialization of Retrospective objects using Lombok annotations,
+ * Test cases to verify the creation and initialization of Retrospective objects
+ * using Lombok annotations,
  * ensuring that objects can be formatted into JSON.
  */
 
@@ -24,12 +28,13 @@ public class RetrospectiveEntityTest extends EntityBaseTest {
     private final LocalDate date = LocalDate.now();
     private final List<String> participants = new ArrayList<>(List.of("Tom", "Richard", "Harry"));
     private final List<Feedback> feedback = new ArrayList<>();
+    private final HashSet<Task> task = new HashSet<>();
 
     private Retrospective retrospective;
 
     @BeforeEach
     void setUp() {
-        this.retrospective = new Retrospective(name, summary, date, participants, feedback);
+        this.retrospective = new Retrospective(name, summary, date, participants, feedback, task);
     }
 
     @Test
@@ -39,7 +44,7 @@ public class RetrospectiveEntityTest extends EntityBaseTest {
         assertEquals(summary, retrospective.getSummary());
         assertEquals(date, retrospective.getDate());
         assertEquals(participants, retrospective.getParticipants());
-        //assertEquals(feedback, retrospective.getFeedback());
+        // assertEquals(feedback, retrospective.getFeedback());
     }
 
     @Test

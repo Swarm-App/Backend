@@ -16,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RetrospectiveService {
@@ -119,21 +121,19 @@ public class RetrospectiveService {
     }
 
     @Transactional
-    public void createNewTaskForRetrospective(String retrospectiveName, Task newTask) throws Exception {
+    public void createNewTaskForRetrospective(String retrospectiveName, TaskItem newTaskItem) throws Exception {
         Retrospective retrospective = retrospectiveRepository.findByName(retrospectiveName);
         if (retrospective == null) {
             logger.warn("Cannot add task to Retrospective " + retrospectiveName + ", as it doesn't exist!");
             throw new Exception("Retrospective does not exist");
         } else {
             logger.info("Adding new task to retrospective: " + retrospectiveName);
-            logger.debug("Adding task with values: " + newTask);
+            logger.debug("Adding task with values: " + newTaskItem);
 
-            List<Task> taskList = retrospective.getTask();
+            Set<Task> taskList = retrospective.getTask();
             int item = taskList.size() + 1;
-            newTask.setItem(item);
-            taskList.add(newTask);
+            taskList.add(new Task(item, newTaskItem));
             retrospective.setTask(taskList);
-
             retrospectiveRepository.save(retrospective);
             logger.info("New task added successfully to retrospective: " + retrospectiveName);
         }
@@ -150,7 +150,7 @@ public class RetrospectiveService {
             logger.info("Updating task for retrospective: " + retrospectiveName + ", item ID: " + itemId);
             logger.debug("Updating task with values: " + taskItem);
 
-            List<Task> taskList = retrospective.getTask();
+            Set<Task> taskList = retrospective.getTask();
             Task taskCopy = taskList.stream()
                     .filter(t -> t.getItem() == itemId)
                     .findFirst()
@@ -163,9 +163,9 @@ public class RetrospectiveService {
 
             taskCopy.setItemBody(taskItem);
 
-            List<Task> updatedTaskList = new java.util.ArrayList<>(taskList.stream()
+            Set<Task> updatedTaskList = taskList.stream()
                     .filter(t -> t.getItem() != itemId)
-                    .toList());
+                    .collect(Collectors.toSet());
 
             updatedTaskList.add(taskCopy);
 
@@ -175,7 +175,7 @@ public class RetrospectiveService {
         }
     }
 
-    public List<Task> getTasksByRetrospectiveName(String retrospectiveName) throws Exception {
+    public Set<Task> getTasksByRetrospectiveName(String retrospectiveName) throws Exception {
         Retrospective retrospective = retrospectiveRepository.findByName(retrospectiveName);
 
         if (retrospective == null) {

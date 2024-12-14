@@ -14,6 +14,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -45,5 +46,5 @@ public class Retrospective {
 
     @JsonProperty
     @ElementCollection(targetClass = Task.class)
-    private List<Task> task;
+    private Set<Task> task;
 }

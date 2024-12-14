@@ -2,6 +2,7 @@ package com.techtest.scrumretroapi.controller;
 
 import com.techtest.scrumretroapi.entity.Retrospective;
 import com.techtest.scrumretroapi.entity.feedback.FeedbackItem;
+import com.techtest.scrumretroapi.entity.task.Task;
 import com.techtest.scrumretroapi.service.RetrospectiveService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +22,10 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -47,26 +52,31 @@ public class RetrospectiveApiControllerTest {
 
     @Test
     void testGetAllRetrospectivesSuccess() {
-        // Mocking the service method to return a non-empty Optional with some retrospectives
+        // Mocking the service method to return a non-empty Optional with some
+        // retrospectives
         List<Retrospective> retrospectives = List.of(
-                new Retrospective("Retrospective 1", "Post release retrospective", LocalDate.now(), new ArrayList<>(), new ArrayList<>()),
-                new Retrospective("Retrospective 1", "Post release retrospective", LocalDate.now(), new ArrayList<>(), new ArrayList<>())
-        );
-
+                new Retrospective("Retrospective 1", "Post release retrospective", LocalDate.now(), new ArrayList<>(),
+                        new ArrayList<>(), new HashSet<>()),
+                new Retrospective("Retrospective 2", "Mid sprint retrospective", LocalDate.now(), new ArrayList<>(),
+                        new ArrayList<>(), new HashSet<>()));
         // factor in pagination
         Page<Retrospective> page = new PageImpl<>(retrospectives);
 
         when(retrospectiveService.getAllRetrospectives(any(Pageable.class))).thenReturn(page);
 
         // Call the controller method
-        ResponseEntity<Page<Retrospective>> result = retrospectiveApiController.getAllRetrospectives(0, 10); // Example: First page with 10 items
+        ResponseEntity<Page<Retrospective>> result = retrospectiveApiController.getAllRetrospectives(0, 10); // Example:
+                                                                                                             // First
+                                                                                                             // page
+                                                                                                             // with 10
+                                                                                                             // items
 
         // Verifying the result and that the service is called
         assertEquals(HttpStatus.OK, result.getStatusCode());
-        assertEquals(retrospectives, Objects.requireNonNull(result.getBody()).getContent()); // Verifying the returned retrospectives
+        assertEquals(retrospectives, Objects.requireNonNull(result.getBody()).getContent()); // Verifying the returned
+                                                                                             // retrospectives
         verify(retrospectiveService, times(1)).getAllRetrospectives(any(Pageable.class));
     }
-
 
     @Test
     void testGetAllRetrospectivesFail() {
@@ -75,7 +85,11 @@ public class RetrospectiveApiControllerTest {
         when(retrospectiveService.getAllRetrospectives(any(Pageable.class))).thenReturn(page);
 
         // Call the controller method
-        ResponseEntity<Page<Retrospective>> result = retrospectiveApiController.getAllRetrospectives(0, 10); // Example: First page with 10 items
+        ResponseEntity<Page<Retrospective>> result = retrospectiveApiController.getAllRetrospectives(0, 10); // Example:
+                                                                                                             // First
+                                                                                                             // page
+                                                                                                             // with 10
+                                                                                                             // items
 
         // Verifying the result and that the service is called
         assertEquals(HttpStatus.NOT_FOUND, result.getStatusCode());
@@ -163,7 +177,8 @@ public class RetrospectiveApiControllerTest {
         FeedbackItem feedbackItem = new FeedbackItem();
 
         try {
-            doNothing().when(retrospectiveService).updateFeedbackForRetrospective(anyString(), anyInt(), eq(feedbackItem));
+            doNothing().when(retrospectiveService).updateFeedbackForRetrospective(anyString(), anyInt(),
+                    eq(feedbackItem));
 
             // Call the controller method
             ResponseEntity<Void> result = retrospectiveApiController.updateFeedbackItem("name", 1, feedbackItem);

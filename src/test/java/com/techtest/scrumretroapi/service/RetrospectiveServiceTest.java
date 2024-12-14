@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,7 +68,7 @@ public class RetrospectiveServiceTest {
         when(retrospectiveRepository.findRetrospectivesByDate(date)).thenReturn(retrospectives);
 
         // Act
-       List<Retrospective> result = retrospectiveService.getRetrospectivesByDate(date);
+        List<Retrospective> result = retrospectiveService.getRetrospectivesByDate(date);
 
         // Assert
         verify(retrospectiveRepository, times(1)).findRetrospectivesByDate(date);
@@ -90,12 +91,14 @@ public class RetrospectiveServiceTest {
     @Test
     void testCreateNewFeedbackForRetrospective() {
         // Mock the repository method
-        Retrospective existingRetrospective = new Retrospective("retrospectiveName", "", LocalDate.now(), new ArrayList<>(), new ArrayList<>()); // Mock existing retrospective
+        Retrospective existingRetrospective = new Retrospective("retrospectiveName", "", LocalDate.now(),
+                new ArrayList<>(), new ArrayList<>(), new HashSet<>()); // Mock existing retrospective
         when(retrospectiveRepository.findByName("retrospectiveName")).thenReturn(existingRetrospective);
 
         // Call the service method
         FeedbackItem feedbackItem = new FeedbackItem();
-        assertDoesNotThrow(() -> retrospectiveService.createNewFeedbackForRetrospective("retrospectiveName", feedbackItem));
+        assertDoesNotThrow(
+                () -> retrospectiveService.createNewFeedbackForRetrospective("retrospectiveName", feedbackItem));
 
         // Verify that save() method is called with the updated Retrospective object
         verify(retrospectiveRepository, times(1)).save(existingRetrospective);
@@ -111,8 +114,10 @@ public class RetrospectiveServiceTest {
 
         // Call the service method and assert that it throws the expected exception
         FeedbackItem newFeedbackItem = new FeedbackItem();
-        Exception exception = assertThrows(Exception.class, () -> retrospectiveService.updateFeedbackForRetrospective("retrospectiveName", 1, newFeedbackItem));
-        assertEquals("No feedback with item number: 1. Please revise item number or create new feedback", exception.getMessage());
+        Exception exception = assertThrows(Exception.class,
+                () -> retrospectiveService.updateFeedbackForRetrospective("retrospectiveName", 1, newFeedbackItem));
+        assertEquals("No feedback with item number: 1. Please revise item number or create new feedback",
+                exception.getMessage());
 
         // Verify that save() method is not called with the updated Retrospective object
         verify(retrospectiveRepository, never()).save(existingRetrospective);
